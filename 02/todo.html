@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Todo</title>
+  </head>
+  <body>
+    <div id="app">
+      <input v-model="input" type="text" @keydown.enter="addTodo" />
+      <div v-for="(todo, index) in todos" @click="toggleTodo(todo)">
+        <input v-model="todo.checked" type="checkbox" />
+
+        <!-- 수정 -->
+        <template v-if="todo.isEditing">
+          <input v-model="todo.editingText" @click.stop />
+          <button @click.stop="stopEditTodo(todo)">
+            취소
+          </button>
+          <button @click.stop="editTodo(todo)">확인</button>
+        </template>
+
+        <!-- 평상시 -->
+        <template v-else>
+          <span>{{ todo.text }}</span>
+          <button @click.stop="startEditTodo(todo)">수정</button>
+        </template>
+
+        <button @click.stop="deleteTodo(index)">삭제</button>
+      </div>
+    </div>
+
+    <script>
+      const app = new Vue({
+        el: "#app",
+        data() {
+          return {
+            input: "",
+            todos: [
+              {
+                text: "투두1",
+                checked: false,
+                isEditing: false,
+                editingText: "",
+              },
+              {
+                text: "투두2",
+                checked: false,
+                isEditing: false,
+                editingText: "",
+              },
+              {
+                text: "투두3",
+                checked: false,
+                isEditing: false,
+                editingText: "",
+              },
+              {
+                text: "투두4",
+                checked: false,
+                isEditing: false,
+                editingText: "",
+              },
+            ],
+          }
+        },
+        methods: {
+          addTodo() {
+            console.log("addTodo", this.input)
+            this.todos.push({
+              text: this.input,
+              checked: false,
+            })
+            this.input = ""
+          },
+          deleteTodo(index) {
+            this.todos.splice(index, 1)
+          },
+          toggleTodo(todo) {
+            todo.checked = !todo.checked
+          },
+          startEditTodo(todo) {
+            todo.isEditing = true
+            todo.editingText = todo.text
+          },
+          stopEditTodo(todo) {
+            todo.isEditing = false
+          },
+          editTodo(todo) {
+            todo.text = todo.editingText
+            this.stopEditTodo(todo)
+          },
+        },
+      })
+    </script>
+  </body>
+</html>
